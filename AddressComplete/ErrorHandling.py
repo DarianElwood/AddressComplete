@@ -1,43 +1,77 @@
 """Error Handling for AddressComplete package."""
+from abc import ABC, abstractmethod
 
 # Response Errors
 
-class ResponseError(Exception):
+class ResponseError(ABC, Exception):
     """Base exception for response errors."""
-    pass
+    def __init__(self, message):
+        """Initialize the ResponseError."""
+        super().__init__(message)
+        
+    @abstractmethod
+    def _raise_error(self, error_code):
+        """Raise the appropriate error based on the error code."""
+        raise NotImplementedError("Subclasses must implement this method")
 
-class CountryInvalidError(ResponseError):
+class FindError(ResponseError):
+    """Base exception for find errors."""
+    def __init__(self, error_code):
+        self._raise_error(error_code)
+        
+    def _raise_error(self, error_code):
+        if error_code in GENERAL_ERROR_CODE_MAP:
+            raise GENERAL_ERROR_CODE_MAP[error_code]
+        elif error_code in FIND_ERROR_CODE_MAP:
+            raise FIND_ERROR_CODE_MAP[error_code]
+        else:
+            raise UnknownError()
+
+class RetrieveError(ResponseError):
+    """Base exception for retrieve errors."""
+    def __init__(self, error_code):
+        self._raise_error(error_code)
+        
+    
+    def _raise_error(self, error_code):
+        if error_code in GENERAL_ERROR_CODE_MAP:
+            raise GENERAL_ERROR_CODE_MAP[error_code]
+        elif error_code in RETRIEVE_ERROR_CODE_MAP:
+            raise RETRIEVE_ERROR_CODE_MAP[error_code]
+        else:
+            raise UnknownError()
+
+class CountryInvalidError(Exception):
     """Country code is invalid."""
     def __init__(self):
         super().__init__("Country code is invalid")
         
-class InvalidSearchTermError(ResponseError):
+class InvalidSearchTermError(Exception):
     """SearchTerm is invalid."""
     def __init__(self):
         super().__init__("SearchTerm is invalid")
         
-class LanguagePreferenceInvalidError(ResponseError):
+class LanguagePreferenceInvalidError(Exception):
     """LanguagePreference is invalid."""
     def __init__(self):
         super().__init__("LanguagePreference is invalid")
         
-class NoResponseError(ResponseError):
+class NoResponseError(Exception):
     """No response from the server."""
     def __init__(self):
         super().__init__("No response from the server")
 
-class IDInvalidError(ResponseError):
-    """ID is invalid."""
+class IDInvalidError(Exception):
     def __init__(self):
         super().__init__("ID is invalid")
 
 
-class NotAvailableError(ResponseError):
-    """Exception raised when the data requested is not available for 
+class NotAvailableError(Exception):
+    """Exception raised when the data requested is not available for
     your account."""
-    def __init__(self, message):
-        super().__init__(message)
-        
+    def __init__(self):
+        super().__init__("The requested record contains data that is not "
+                         "available on your account.")
 
 # API Errors
 
@@ -183,4 +217,42 @@ class AgreementNotSignedError(APIError):
     def __init__(self):
         super().__init__("Agreement Not Signed")
 
+FIND_ERROR_CODE_MAP = {
+    1001: InvalidSearchTermError,
+    1002: InvalidSearchTermError,
+    1003: CountryInvalidError,
+    1004: LanguagePreferenceInvalidError,
+    1005: NoResponseError,
+}
+
+RETRIEVE_ERROR_CODE_MAP = {
+    1001: IDInvalidError,
+    1002: NotAvailableError,
+}
+
+GENERAL_ERROR_CODE_MAP = {
+    -1: UnknownError,
+    2: UnknownKeyError,
+    3: AccountOutOfCreditError,
+    4: IPNotAllowedError,
+    5: URLNotAllowedError,
+    6: ServiceNotAvailableOnKeyError,
+    7: ServiceNotAvailableOnPlanError,
+    8: KeyDailyLimitExceededError,
+    9: AccountSuspendedError,
+    10: SurgeProtectorTriggeredError,
+    11: NoValidLicenseError,
+    12: ManagementKeyRequiredError,
+    13: DemoLimitExceededError,
+    14: FreeServiceLimitExceededError,
+    15: WrongKeyTypeError,
+    16: KeyExpiredError,
+    17: UserLookupLimitExceededError,
+    18: InvalidParametersError,
+    19: InvalidJSONError,
+    20: EndpointNotAvailableError,
+    21: SandboxNotAvailableError,
+    22: HTTPSRequiredError,
+    23: AgreementNotSignedError,
+}
 

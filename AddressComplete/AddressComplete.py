@@ -1,5 +1,6 @@
 import urllib.parse
-from typing import Tuple
+
+from .ErrorHandling import FindError, RetrieveError
 
 import requests
 
@@ -8,14 +9,13 @@ class AddressComplete:
     """A client module for the Canada Post AddressComplete API."""
 
     DEFAULT_RETRIEVE_ENDPOINT = (
-        "https://ws1.postescanada-canadapost.ca/addresscomplete/"
-        "interactive/retrieve/v2.11/json.ws"
-        "?provider=AddressComplete&package=Interactive"
-        "&service=Retrieve&version=2.11&endpoint=json.ws"
+        "https://ws1.postescanada-canadapost.ca/addresscomplete/interactive/"
+        "retrieve/v2.11/json3.ws?provider=AddressComplete&package=Interactive"
+        "&service=Retrieve&version=2.11&endpoint=json3.ws"
     )
     
     DEFAULT_FIND_ENDPOINT = (
-        "http://ws1.postescanada-canadapost.ca/addresscomplete/interactive/find"
+        "https://ws1.postescanada-canadapost.ca/addresscomplete/interactive/find"
         "/v2.10/json3.ws?provider=AddressComplete&package=Interactive&service="
         "Find&version=2.1&endpoint=json3.ws"
         )
@@ -54,7 +54,11 @@ class AddressComplete:
         response = requests.get(url)
         response.raise_for_status()
         
-        return response.json()
+        response = response.json()
+        if response["Error"] is not None:
+            raise FindError(response["Error"])
+        
+        return response
     
     def retrieve(self, id):
         """Retrieves detailed address information based on the ID.
@@ -69,4 +73,8 @@ class AddressComplete:
         
         response = requests.get(url)
         response.raise_for_status()
-        return response.json()
+        response = response.json()
+        if response["Error"] is not None:
+            raise RetrieveError(response["Error"])
+        
+        return response
