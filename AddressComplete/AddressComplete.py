@@ -55,10 +55,26 @@ class AddressComplete:
         response.raise_for_status()
         
         response = response.json()
-        if response["Error"] is not None:
-            raise FindError(response["Error"])
+        # Check for top-level Error field
+        error_code = response.get("Error")
+        # Also check for errors in Items array (API sometimes returns errors there)
+        if error_code is None and response.get("Items"):
+            items = response.get("Items", [])
+            if items and isinstance(items, list) and len(items) > 0:
+                first_item = items[0]
+                if isinstance(first_item, dict) and "Error" in first_item:
+                    error_code = first_item["Error"]
         
-        return response
+        if error_code is not None:
+            # Convert string error codes to integers if needed
+            if isinstance(error_code, str):
+                try:
+                    error_code = int(error_code)
+                except ValueError:
+                    pass  # Keep as string if conversion fails
+            raise FindError(error_code)
+        else:
+            return response
     
     def retrieve(self, id):
         """Retrieves detailed address information based on the ID.
@@ -74,7 +90,23 @@ class AddressComplete:
         response = requests.get(url)
         response.raise_for_status()
         response = response.json()
-        if response["Error"] is not None:
-            raise RetrieveError(response["Error"])
+        # Check for top-level Error field
+        error_code = response.get("Error")
+        # Also check for errors in Items array (API sometimes returns errors there)
+        if error_code is None and response.get("Items"):
+            items = response.get("Items", [])
+            if items and isinstance(items, list) and len(items) > 0:
+                first_item = items[0]
+                if isinstance(first_item, dict) and "Error" in first_item:
+                    error_code = first_item["Error"]
         
-        return response
+        if error_code is not None:
+            # Convert string error codes to integers if needed
+            if isinstance(error_code, str):
+                try:
+                    error_code = int(error_code)
+                except ValueError:
+                    pass  # Keep as string if conversion fails
+            raise RetrieveError(error_code)
+        else:
+            return response
