@@ -4,7 +4,7 @@ from urllib.parse import parse_qs, urlparse
 
 import requests
 
-from AddressComplete.AddressComplete import AddressComplete
+from AddressComplete import AddressComplete
 from AddressComplete.ErrorHandling import (
     AccountOutOfCreditError,
     AccountSuspendedError,

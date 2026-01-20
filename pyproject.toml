@@ -21,10 +21,11 @@ keywords = [
     "address-validation",
     "address-autocomplete",
 ]
+license = {text = "GPL-3.0"}
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
@@ -33,4 +34,15 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/dellwood546/AddressComplete"
+Repository = "https://github.com/dellwood546/AddressComplete"
+Issues = "https://github.com/dellwood546/AddressComplete/issues"
+
+[tool.hatchling.build.targets.wheel]
+exclude = [
+    "/tests",
+    "/test.py",
 ]
