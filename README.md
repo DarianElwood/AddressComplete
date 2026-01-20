@@ -1,20 +1,37 @@
 # AddressComplete
 
-A Python client library for the Canada Post AddressComplete API. This library provides a simple interface for address autocomplete and validation using the Canada Post AddressComplete service.
+[![PyPI version](https://badge.fury.io/py/addresscomplete.svg)](https://badge.fury.io/py/addresscomplete)
+[![Python Version](https://img.shields.io/pypi/pyversions/addresscomplete)](https://pypi.org/project/addresscomplete/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Downloads](https://pepy.tech/badge/addresscomplete)](https://pepy.tech/project/addresscomplete)
+[![GitHub stars](https://img.shields.io/github/stars/dellwood546/AddressComplete?style=social)](https://github.com/dellwood546/AddressComplete)
+
+A clean, Pythonic client for the Canada Post AddressComplete API. Simplify address autocomplete and validation in your applications with type-safe error handling and an intuitive interface.
+
+## Quick Start
+
+```bash
+pip install addresscomplete
+```
+
+```python
+from addresscomplete import AddressComplete
+
+client = AddressComplete("your-api-key-here")
+results = client.find("123 Main St, Toronto")
+```
 
 ## Features
 
-- **Address Search**: Find address suggestions based on search terms
-- **Address Retrieval**: Retrieve detailed address information using address IDs
-- **Error Handling**: Comprehensive error handling with specific exception types for different API error codes
-- **Easy to Use**: Simple, intuitive API design
+- **Fast Address Search** - Get instant address suggestions with customizable parameters
+- **Detailed Address Retrieval** - Fetch complete address information using unique IDs
+- **Robust Error Handling** - Specific exception types for every API error scenario
+- **Zero Configuration** - Works out of the box with sensible defaults
 
 ## Installation
 
-Install from PyPI (when available):
-
 ```bash
-pip install AddressComplete
+pip install addresscomplete
 ```
 
 Or install from source:
@@ -25,14 +42,11 @@ cd AddressComplete
 pip install .
 ```
 
-## Requirements
-
-- Python 3.7 or higher
-- requests library
+**Requirements:** Python 3.7+ and the `requests` library (installed automatically).
 
 ## Getting Started
 
-To use AddressComplete, you'll need a Canada Post AddressComplete API key. You can obtain one from [Canada Post](https://www.canadapost-postescanada.ca/cpc/en/business/marketing/campaigns/addresscomplete.page).
+Get your free API key from [Canada Post AddressComplete](https://www.canadapost-postescanada.ca/cpc/en/business/marketing/campaigns/addresscomplete.page), then start using the library immediately.
 
 ### Basic Usage
 
@@ -68,82 +82,76 @@ try:
         language_preference="en"
     )
     
-    # Process results
-    if results.get("Items"):
-        for item in results["Items"]:
-            print(f"ID: {item.get('Id')}, Description: {item.get('Description')}")
+    # Process and enrich results
+    for item in results.get("Items", []):
+        print(f"{item.get('Description')} (ID: {item.get('Id')})")
+        
+        # Retrieve complete address details
+        try:
+            details = client.retrieve(item["Id"])
+            print(f"Complete address: {details}")
+        except RetrieveError as e:
+            print(f"Retrieval failed: {e}")
             
-            # Retrieve full address details
-            if item.get("Id"):
-                try:
-                    details = client.retrieve(item["Id"])
-                    print(f"Full address: {details}")
-                except RetrieveError as e:
-                    print(f"Error retrieving address: {e}")
-                    
 except FindError as e:
-    print(f"Error finding addresses: {e}")
+    print(f"Search error: {e}")
 ```
 
 ## API Reference
 
 ### `AddressComplete(api_key)`
 
-Initialize an AddressComplete client.
+Creates a new client instance.
 
 **Parameters:**
 - `api_key` (str): Your Canada Post AddressComplete API key
 
 ### `find(search_term, country="CAN", max_suggestions=10, language_preference="en")`
 
-Find address suggestions based on a search term.
+Searches for address suggestions matching the search term.
 
 **Parameters:**
 - `search_term` (str): The address search term
-- `country` (str, optional): The country code (default: "CAN")
-- `max_suggestions` (int, optional): Maximum number of suggestions to return (default: 10)
-- `language_preference` (str, optional): Language preference code, 2 or 4 digits (default: "en")
+- `country` (str, optional): Country code, defaults to `"CAN"`
+- `max_suggestions` (int, optional): Maximum results to return, defaults to `10`
+- `language_preference` (str, optional): Language code (2 or 4 digits), defaults to `"en"`
 
-**Returns:**
-- dict: JSON response containing address suggestions
+**Returns:** `dict` - JSON response with address suggestions
 
-**Raises:**
-- `FindError`: If the API returns an error
+**Raises:** `FindError` - When the API returns an error
 
 ### `retrieve(id)`
 
-Retrieve detailed address information based on an address ID.
+Fetches complete address details for the given ID.
 
 **Parameters:**
-- `id` (str): The unique identifier for the address (obtained from `find()`)
+- `id` (str): Unique address identifier from `find()` results
 
-**Returns:**
-- dict: JSON response containing detailed address information
+**Returns:** `dict` - Complete address information
 
-**Raises:**
-- `RetrieveError`: If the API returns an error
+**Raises:** `RetrieveError` - When the API returns an error
 
 ## Error Handling
 
-The library provides specific exception types for different error scenarios:
+The library maps API error codes to specific exception types, making error handling straightforward and explicit.
 
-- `FindError`: Raised when the `find()` method encounters an error
-- `RetrieveError`: Raised when the `retrieve()` method encounters an error
+- `FindError` - Raised when address search fails
+- `RetrieveError` - Raised when address retrieval fails
 
-Both exceptions are subclasses of the base `ResponseError` class and provide detailed error information based on the API error codes.
+Both exceptions automatically map error codes to specific exception classes (e.g., `InvalidSearchTermError`, `AccountSuspendedError`, `UnknownKeyError`) for granular error handling.
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [LICENSE](LICENSE) file for details.
+Licensed under the GNU General Public License v3.0 (GPL-3.0). See [LICENSE](LICENSE) for details.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change.
 
-## Issues
+## Support
 
-If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/dellwood546/AddressComplete/issues).
+Found a bug or have a question? [Open an issue](https://github.com/dellwood546/AddressComplete/issues) on GitHub.
 
-## Author
+---
 
-Darian Elwood (dellwood546@gmail.com)
+**Author:** Darian Elwood (dellwood546@gmail.com)
