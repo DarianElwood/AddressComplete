@@ -256,3 +256,17 @@ GENERAL_ERROR_CODE_MAP = {
     23: AgreementNotSignedError,
 }
 
+
+def raise_error(error_code, context=None):
+    """Raise the appropriate error based on the error code and context.
+    
+    Args:
+        error_code: The error code to raise.
+        context: Optional context string. If "find", uses FindError logic.
+                 If "retrieve", uses RetrieveError logic. Defaults to "find".
+    """
+    if context == "retrieve":
+        RetrieveError(error_code)
+    else:
+        # Default to FindError behavior (also when context="find" or None)
+        FindError(error_code)

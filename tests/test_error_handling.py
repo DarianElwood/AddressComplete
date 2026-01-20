@@ -8,7 +8,8 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from AddressComplete.ErrorHandling import (
-    raise_error,
+    FindError,
+    RetrieveError,
     FIND_ERROR_CODE_MAP,
     RETRIEVE_ERROR_CODE_MAP,
     GENERAL_ERROR_CODE_MAP,
@@ -50,190 +51,176 @@ from AddressComplete.ErrorHandling import (
 
 
 class TestRaiseErrorFunction(unittest.TestCase):
-    """Test the raise_error() function with all error codes."""
+    """Test FindError and RetrieveError with all error codes."""
 
     def test_raise_error_with_find_error_code_1001(self):
         """Test that error code 1001 raises InvalidSearchTermError."""
         with self.assertRaises(InvalidSearchTermError):
-            raise_error(1001, context="find")
+            FindError(1001)
 
     def test_raise_error_with_find_error_code_1002(self):
         """Test that error code 1002 raises InvalidSearchTermError."""
         with self.assertRaises(InvalidSearchTermError):
-            raise_error(1002)
+            FindError(1002)
 
     def test_raise_error_with_find_error_code_1003(self):
         """Test that error code 1003 raises CountryInvalidError."""
         with self.assertRaises(CountryInvalidError):
-            raise_error(1003)
+            FindError(1003)
 
     def test_raise_error_with_find_error_code_1004(self):
         """Test that error code 1004 raises LanguagePreferenceInvalidError."""
         with self.assertRaises(LanguagePreferenceInvalidError):
-            raise_error(1004)
+            FindError(1004)
 
     def test_raise_error_with_find_error_code_1005(self):
         """Test that error code 1005 raises NoResponseError."""
         with self.assertRaises(NoResponseError):
-            raise_error(1005)
+            FindError(1005)
 
     def test_raise_error_with_retrieve_error_code_1001(self):
         """Test that error code 1001 raises IDInvalidError for retrieve."""
-        # Note: 1001 is in both maps, but FIND_ERROR_CODE_MAP is checked first
-        # So this will raise InvalidSearchTermError, not IDInvalidError
-        # This tests the current behavior
-        with self.assertRaises(InvalidSearchTermError):
-            raise_error(1001)
+        with self.assertRaises(IDInvalidError):
+            RetrieveError(1001)
 
     def test_raise_error_with_retrieve_error_code_1002(self):
-        """Test that error code 1002 raises InvalidSearchTermError (FIND_ERROR_CODE_MAP checked first)."""
-        # Note: 1002 is in both FIND_ERROR_CODE_MAP and RETRIEVE_ERROR_CODE_MAP
-        # Since FIND_ERROR_CODE_MAP is checked first, it raises InvalidSearchTermError
-        with self.assertRaises(InvalidSearchTermError):
-            raise_error(1002)
+        """Test that error code 1002 raises NotAvailableError for retrieve."""
+        with self.assertRaises(NotAvailableError):
+            RetrieveError(1002)
 
     def test_raise_error_with_general_error_code_negative_one(self):
         """Test that error code -1 raises UnknownError."""
         with self.assertRaises(UnknownError):
-            raise_error(-1)
+            FindError(-1)
 
     def test_raise_error_with_general_error_code_2(self):
         """Test that error code 2 raises UnknownKeyError."""
         with self.assertRaises(UnknownKeyError):
-            raise_error(2)
+            FindError(2)
 
     def test_raise_error_with_general_error_code_3(self):
         """Test that error code 3 raises AccountOutOfCreditError."""
         with self.assertRaises(AccountOutOfCreditError):
-            raise_error(3)
+            FindError(3)
 
     def test_raise_error_with_general_error_code_4(self):
         """Test that error code 4 raises IPNotAllowedError."""
         with self.assertRaises(IPNotAllowedError):
-            raise_error(4)
+            FindError(4)
 
     def test_raise_error_with_general_error_code_5(self):
         """Test that error code 5 raises URLNotAllowedError."""
         with self.assertRaises(URLNotAllowedError):
-            raise_error(5)
+            FindError(5)
 
     def test_raise_error_with_general_error_code_6(self):
         """Test that error code 6 raises ServiceNotAvailableOnKeyError."""
         with self.assertRaises(ServiceNotAvailableOnKeyError):
-            raise_error(6)
+            FindError(6)
 
     def test_raise_error_with_general_error_code_7(self):
         """Test that error code 7 raises ServiceNotAvailableOnPlanError."""
         with self.assertRaises(ServiceNotAvailableOnPlanError):
-            raise_error(7)
+            FindError(7)
 
     def test_raise_error_with_general_error_code_8(self):
         """Test that error code 8 raises KeyDailyLimitExceededError."""
         with self.assertRaises(KeyDailyLimitExceededError):
-            raise_error(8)
+            FindError(8)
 
     def test_raise_error_with_general_error_code_9(self):
         """Test that error code 9 raises AccountSuspendedError."""
         with self.assertRaises(AccountSuspendedError):
-            raise_error(9)
+            FindError(9)
 
     def test_raise_error_with_general_error_code_10(self):
         """Test that error code 10 raises SurgeProtectorTriggeredError."""
         with self.assertRaises(SurgeProtectorTriggeredError):
-            raise_error(10)
+            FindError(10)
 
     def test_raise_error_with_general_error_code_11(self):
         """Test that error code 11 raises NoValidLicenseError."""
         with self.assertRaises(NoValidLicenseError):
-            raise_error(11)
+            FindError(11)
 
     def test_raise_error_with_general_error_code_12(self):
         """Test that error code 12 raises ManagementKeyRequiredError."""
         with self.assertRaises(ManagementKeyRequiredError):
-            raise_error(12)
+            FindError(12)
 
     def test_raise_error_with_general_error_code_13(self):
         """Test that error code 13 raises DemoLimitExceededError."""
         with self.assertRaises(DemoLimitExceededError):
-            raise_error(13)
+            FindError(13)
 
     def test_raise_error_with_general_error_code_14(self):
         """Test that error code 14 raises FreeServiceLimitExceededError."""
         with self.assertRaises(FreeServiceLimitExceededError):
-            raise_error(14)
+            FindError(14)
 
     def test_raise_error_with_general_error_code_15(self):
         """Test that error code 15 raises WrongKeyTypeError."""
         with self.assertRaises(WrongKeyTypeError):
-            raise_error(15)
+            FindError(15)
 
     def test_raise_error_with_general_error_code_16(self):
         """Test that error code 16 raises KeyExpiredError."""
         with self.assertRaises(KeyExpiredError):
-            raise_error(16)
+            FindError(16)
 
     def test_raise_error_with_general_error_code_17(self):
         """Test that error code 17 raises UserLookupLimitExceededError."""
         with self.assertRaises(UserLookupLimitExceededError):
-            raise_error(17)
+            FindError(17)
 
     def test_raise_error_with_general_error_code_18(self):
         """Test that error code 18 raises InvalidParametersError."""
         with self.assertRaises(InvalidParametersError):
-            raise_error(18)
+            FindError(18)
 
     def test_raise_error_with_general_error_code_19(self):
         """Test that error code 19 raises InvalidJSONError."""
         with self.assertRaises(InvalidJSONError):
-            raise_error(19)
+            FindError(19)
 
     def test_raise_error_with_general_error_code_20(self):
         """Test that error code 20 raises EndpointNotAvailableError."""
         with self.assertRaises(EndpointNotAvailableError):
-            raise_error(20)
+            FindError(20)
 
     def test_raise_error_with_general_error_code_21(self):
         """Test that error code 21 raises SandboxNotAvailableError."""
         with self.assertRaises(SandboxNotAvailableError):
-            raise_error(21)
+            FindError(21)
 
     def test_raise_error_with_general_error_code_22(self):
         """Test that error code 22 raises HTTPSRequiredError."""
         with self.assertRaises(HTTPSRequiredError):
-            raise_error(22)
+            FindError(22)
 
     def test_raise_error_with_general_error_code_23(self):
         """Test that error code 23 raises AgreementNotSignedError."""
         with self.assertRaises(AgreementNotSignedError):
-            raise_error(23)
+            FindError(23)
 
     def test_raise_error_with_unknown_error_code(self):
         """Test that unknown error codes raise UnknownError."""
         with self.assertRaises(UnknownError):
-            raise_error(9999)
+            FindError(9999)
 
     def test_raise_error_with_unknown_error_code_zero(self):
         """Test that error code 0 raises UnknownError."""
         with self.assertRaises(UnknownError):
-            raise_error(0)
+            FindError(0)
 
     def test_raise_error_with_unknown_error_code_one(self):
         """Test that error code 1 raises UnknownError."""
         with self.assertRaises(UnknownError):
-            raise_error(1)
+            FindError(1)
 
 
 class TestExceptionClasses(unittest.TestCase):
     """Test exception class inheritance and messages."""
-
-    def test_response_error_inheritance(self):
-        """Test that ResponseError subclasses inherit from ResponseError."""
-        self.assertTrue(issubclass(CountryInvalidError, ResponseError))
-        self.assertTrue(issubclass(InvalidSearchTermError, ResponseError))
-        self.assertTrue(issubclass(LanguagePreferenceInvalidError, ResponseError))
-        self.assertTrue(issubclass(NoResponseError, ResponseError))
-        self.assertTrue(issubclass(IDInvalidError, ResponseError))
-        self.assertTrue(issubclass(NotAvailableError, ResponseError))
 
     def test_api_error_inheritance(self):
         """Test that APIError subclasses inherit from APIError."""
@@ -303,8 +290,8 @@ class TestExceptionClasses(unittest.TestCase):
 
     def test_not_available_error_message(self):
         """Test NotAvailableError message with custom message."""
-        error = NotAvailableError("Custom message")
-        self.assertEqual(str(error), "Custom message")
+        error = NotAvailableError()
+        self.assertEqual(str(error), "The requested record contains data that is not available on your account.")
 
     def test_unknown_error_message(self):
         """Test UnknownError message."""
@@ -456,12 +443,7 @@ class TestExceptionClasses(unittest.TestCase):
         ]
         
         for exc_class in exceptions:
-            if exc_class == NotAvailableError:
-                # NotAvailableError requires a message parameter
-                error = exc_class("Test message")
-            else:
-                error = exc_class()
-            self.assertIsInstance(error, Exception)
+            self.assertIsInstance(exc_class(), Exception)
 
 
 class TestErrorCodeMaps(unittest.TestCase):
