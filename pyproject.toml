@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "addresscomplete"
-version = "1.0.1"
+version = "1.0.3"
 description = "A Python client for the Canada Post AddressComplete API"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -37,9 +37,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/dellwood546/AddressComplete"
-Repository = "https://github.com/dellwood546/AddressComplete"
-Issues = "https://github.com/dellwood546/AddressComplete/issues"
+Repository = "https://github.com/darianelwood/AddressComplete"
+Issues = "https://github.com/darianelwood/AddressComplete/issues"
 
 [tool.hatchling.build.targets.wheel]
 exclude = [

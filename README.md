@@ -4,7 +4,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/addresscomplete)](https://pypi.org/project/addresscomplete/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Downloads](https://pepy.tech/badge/addresscomplete)](https://pepy.tech/project/addresscomplete)
-[![GitHub stars](https://img.shields.io/github/stars/dellwood546/AddressComplete?style=social)](https://github.com/dellwood546/AddressComplete)
+[![GitHub stars](https://img.shields.io/github/stars/darianelwood/AddressComplete?style=social)](https://github.com/darianelwood/AddressComplete)
 
 A clean, Pythonic client for the Canada Post AddressComplete API. Simplify address autocomplete and validation in your applications with type-safe error handling and an intuitive interface.
 
