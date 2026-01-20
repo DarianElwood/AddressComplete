@@ -4,10 +4,10 @@ import unittest
 import sys
 import os
 
-# Add parent directory to path to import AddressComplete module
+# Add parent directory to path to import addresscomplete module
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from AddressComplete.ErrorHandling import (
+from addresscomplete.ErrorHandling import (
     FindError,
     RetrieveError,
     FIND_ERROR_CODE_MAP,

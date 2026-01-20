@@ -37,7 +37,7 @@ To use AddressComplete, you'll need a Canada Post AddressComplete API key. You c
 ### Basic Usage
 
 ```python
-from AddressComplete import AddressComplete
+from addresscomplete import AddressComplete
 
 # Initialize the client with your API key
 client = AddressComplete("your-api-key-here")
@@ -55,7 +55,7 @@ print(details)
 ### Advanced Usage
 
 ```python
-from AddressComplete import AddressComplete, FindError, RetrieveError
+from addresscomplete import AddressComplete, FindError, RetrieveError
 
 client = AddressComplete("your-api-key-here")
 

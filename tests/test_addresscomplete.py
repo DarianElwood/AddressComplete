@@ -4,8 +4,8 @@ from urllib.parse import parse_qs, urlparse
 
 import requests
 
-from AddressComplete import AddressComplete
-from AddressComplete.ErrorHandling import (
+from addresscomplete import AddressComplete
+from addresscomplete.ErrorHandling import (
     AccountOutOfCreditError,
     AccountSuspendedError,
     AgreementNotSignedError,
@@ -52,7 +52,7 @@ class TestAddressCompleteFind(unittest.TestCase):
     def setUp(self):
         self.client = AddressComplete("test-key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_happy_path_returns_json(self, mock_get):
         payload = {"Error": None, "Items": []}
         mock_get.return_value = make_response(payload)
@@ -75,7 +75,7 @@ class TestAddressCompleteFind(unittest.TestCase):
         self.assertEqual(query["MaxSuggestions"][0], "5")
         self.assertEqual(query["LanguagePreference"][0], "en")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_raises_for_status(self, mock_get):
         mock_get.return_value = make_response(
             {"Error": None},
@@ -85,21 +85,21 @@ class TestAddressCompleteFind(unittest.TestCase):
         with self.assertRaises(requests.HTTPError):
             self.client.find("test")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_mapping_find(self, mock_get):
         mock_get.return_value = make_response({"Error": 1001})
 
         with self.assertRaises(InvalidSearchTermError):
             self.client.find("bad")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_mapping_general(self, mock_get):
         mock_get.return_value = make_response({"Error": 2})
 
         with self.assertRaises(UnknownKeyError):
             self.client.find("test")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_unknown_error_code(self, mock_get):
         mock_get.return_value = make_response({"Error": 9999})
 
@@ -111,7 +111,7 @@ class TestAddressCompleteRetrieve(unittest.TestCase):
     def setUp(self):
         self.client = AddressComplete("test-key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_happy_path_returns_json(self, mock_get):
         payload = {"Error": None, "Address": {"Line1": "123 Main St"}}
         mock_get.return_value = make_response(payload)
@@ -126,7 +126,7 @@ class TestAddressCompleteRetrieve(unittest.TestCase):
         self.assertEqual(query["Key"][0], "test-key")
         self.assertEqual(query["Id"][0], "ABC 123")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_raises_for_status(self, mock_get):
         mock_get.return_value = make_response(
             {"Error": None},
@@ -136,21 +136,21 @@ class TestAddressCompleteRetrieve(unittest.TestCase):
         with self.assertRaises(requests.HTTPError):
             self.client.retrieve("ABC")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_mapping_retrieve(self, mock_get):
         mock_get.return_value = make_response({"Error": 1001})
 
         with self.assertRaises(IDInvalidError):
             self.client.retrieve("bad-id")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_mapping_general(self, mock_get):
         mock_get.return_value = make_response({"Error": 2})
 
         with self.assertRaises(UnknownKeyError):
             self.client.retrieve("ABC")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_unknown_error_code(self, mock_get):
         mock_get.return_value = make_response({"Error": 9999})
 
@@ -164,7 +164,7 @@ class TestFindErrorMappings(unittest.TestCase):
     def setUp(self):
         self.client = AddressComplete("test-key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_1001_invalid_search_term(self, mock_get):
         """Test error code 1001 maps to InvalidSearchTermError."""
         mock_get.return_value = make_response({"Error": 1001})
@@ -172,7 +172,7 @@ class TestFindErrorMappings(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "SearchTerm is invalid")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_1002_invalid_search_term(self, mock_get):
         """Test error code 1002 maps to InvalidSearchTermError."""
         mock_get.return_value = make_response({"Error": 1002})
@@ -180,7 +180,7 @@ class TestFindErrorMappings(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "SearchTerm is invalid")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_1003_country_invalid(self, mock_get):
         """Test error code 1003 maps to CountryInvalidError."""
         mock_get.return_value = make_response({"Error": 1003})
@@ -188,7 +188,7 @@ class TestFindErrorMappings(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Country code is invalid")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_1004_language_preference_invalid(self, mock_get):
         """Test error code 1004 maps to LanguagePreferenceInvalidError."""
         mock_get.return_value = make_response({"Error": 1004})
@@ -196,7 +196,7 @@ class TestFindErrorMappings(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "LanguagePreference is invalid")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_1005_no_response(self, mock_get):
         """Test error code 1005 maps to NoResponseError."""
         mock_get.return_value = make_response({"Error": 1005})
@@ -211,7 +211,7 @@ class TestRetrieveErrorMappings(unittest.TestCase):
     def setUp(self):
         self.client = AddressComplete("test-key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_1001_id_invalid(self, mock_get):
         """Test error code 1001 maps to IDInvalidError."""
         mock_get.return_value = make_response({"Error": 1001})
@@ -219,7 +219,7 @@ class TestRetrieveErrorMappings(unittest.TestCase):
             self.client.retrieve("bad-id")
         self.assertEqual(str(context.exception), "ID is invalid")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_1002_not_available(self, mock_get):
         """Test error code 1002 maps to NotAvailableError."""
         mock_get.return_value = make_response({"Error": 1002})
@@ -237,7 +237,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
     def setUp(self):
         self.client = AddressComplete("test-key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_minus_1_unknown_error(self, mock_get):
         """Test error code -1 maps to UnknownError."""
         mock_get.return_value = make_response({"Error": -1})
@@ -245,7 +245,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Unknown error")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_2_unknown_key(self, mock_get):
         """Test error code 2 maps to UnknownKeyError."""
         mock_get.return_value = make_response({"Error": 2})
@@ -253,7 +253,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Unknown key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_3_account_out_of_credit(self, mock_get):
         """Test error code 3 maps to AccountOutOfCreditError."""
         mock_get.return_value = make_response({"Error": 3})
@@ -261,7 +261,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Account out of credit")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_4_ip_not_allowed(self, mock_get):
         """Test error code 4 maps to IPNotAllowedError."""
         mock_get.return_value = make_response({"Error": 4})
@@ -269,7 +269,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Request not allowed from this IP")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_5_url_not_allowed(self, mock_get):
         """Test error code 5 maps to URLNotAllowedError."""
         mock_get.return_value = make_response({"Error": 5})
@@ -277,7 +277,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Request not allowed from this URL")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_6_service_not_available_on_key(self, mock_get):
         """Test error code 6 maps to ServiceNotAvailableOnKeyError."""
         mock_get.return_value = make_response({"Error": 6})
@@ -285,7 +285,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Web service not available on this key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_7_service_not_available_on_plan(self, mock_get):
         """Test error code 7 maps to ServiceNotAvailableOnPlanError."""
         mock_get.return_value = make_response({"Error": 7})
@@ -293,7 +293,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Web service not available on your plan")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_8_key_daily_limit_exceeded(self, mock_get):
         """Test error code 8 maps to KeyDailyLimitExceededError."""
         mock_get.return_value = make_response({"Error": 8})
@@ -301,7 +301,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Key daily limit exceeded")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_9_account_suspended(self, mock_get):
         """Test error code 9 maps to AccountSuspendedError."""
         mock_get.return_value = make_response({"Error": 9})
@@ -309,7 +309,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Your account has been suspended")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_10_surge_protector_triggered(self, mock_get):
         """Test error code 10 maps to SurgeProtectorTriggeredError."""
         mock_get.return_value = make_response({"Error": 10})
@@ -317,7 +317,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Surge protector triggered")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_11_no_valid_license(self, mock_get):
         """Test error code 11 maps to NoValidLicenseError."""
         mock_get.return_value = make_response({"Error": 11})
@@ -325,7 +325,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "No valid license available")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_12_management_key_required(self, mock_get):
         """Test error code 12 maps to ManagementKeyRequiredError."""
         mock_get.return_value = make_response({"Error": 12})
@@ -333,7 +333,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Management key required")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_13_demo_limit_exceeded(self, mock_get):
         """Test error code 13 maps to DemoLimitExceededError."""
         mock_get.return_value = make_response({"Error": 13})
@@ -341,7 +341,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Demo limit exceeded")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_14_free_service_limit_exceeded(self, mock_get):
         """Test error code 14 maps to FreeServiceLimitExceededError."""
         mock_get.return_value = make_response({"Error": 14})
@@ -349,7 +349,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Free service limit exceeded")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_15_wrong_key_type(self, mock_get):
         """Test error code 15 maps to WrongKeyTypeError."""
         mock_get.return_value = make_response({"Error": 15})
@@ -357,7 +357,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Wrong type of key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_16_key_expired(self, mock_get):
         """Test error code 16 maps to KeyExpiredError."""
         mock_get.return_value = make_response({"Error": 16})
@@ -365,7 +365,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Key expired")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_17_user_lookup_limit_exceeded(self, mock_get):
         """Test error code 17 maps to UserLookupLimitExceededError."""
         mock_get.return_value = make_response({"Error": 17})
@@ -373,7 +373,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Individual User exceeded Lookup Limit")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_18_invalid_parameters(self, mock_get):
         """Test error code 18 maps to InvalidParametersError."""
         mock_get.return_value = make_response({"Error": 18})
@@ -381,7 +381,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Missing or invalid parameters")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_19_invalid_json(self, mock_get):
         """Test error code 19 maps to InvalidJSONError."""
         mock_get.return_value = make_response({"Error": 19})
@@ -389,7 +389,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Invalid JSON object")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_20_endpoint_not_available(self, mock_get):
         """Test error code 20 maps to EndpointNotAvailableError."""
         mock_get.return_value = make_response({"Error": 20})
@@ -397,7 +397,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "Endpoint not available")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_21_sandbox_not_available(self, mock_get):
         """Test error code 21 maps to SandboxNotAvailableError."""
         mock_get.return_value = make_response({"Error": 21})
@@ -408,7 +408,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             "Sandbox Mode is not available on this endpoint"
         )
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_22_https_required(self, mock_get):
         """Test error code 22 maps to HTTPSRequiredError."""
         mock_get.return_value = make_response({"Error": 22})
@@ -416,7 +416,7 @@ class TestGeneralErrorMappingsFind(unittest.TestCase):
             self.client.find("test")
         self.assertEqual(str(context.exception), "HTTPS requests only")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_find_error_23_agreement_not_signed(self, mock_get):
         """Test error code 23 maps to AgreementNotSignedError."""
         mock_get.return_value = make_response({"Error": 23})
@@ -431,7 +431,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
     def setUp(self):
         self.client = AddressComplete("test-key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_minus_1_unknown_error(self, mock_get):
         """Test error code -1 maps to UnknownError."""
         mock_get.return_value = make_response({"Error": -1})
@@ -439,7 +439,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Unknown error")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_2_unknown_key(self, mock_get):
         """Test error code 2 maps to UnknownKeyError."""
         mock_get.return_value = make_response({"Error": 2})
@@ -447,7 +447,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Unknown key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_3_account_out_of_credit(self, mock_get):
         """Test error code 3 maps to AccountOutOfCreditError."""
         mock_get.return_value = make_response({"Error": 3})
@@ -455,7 +455,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Account out of credit")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_4_ip_not_allowed(self, mock_get):
         """Test error code 4 maps to IPNotAllowedError."""
         mock_get.return_value = make_response({"Error": 4})
@@ -463,7 +463,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Request not allowed from this IP")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_5_url_not_allowed(self, mock_get):
         """Test error code 5 maps to URLNotAllowedError."""
         mock_get.return_value = make_response({"Error": 5})
@@ -471,7 +471,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Request not allowed from this URL")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_6_service_not_available_on_key(self, mock_get):
         """Test error code 6 maps to ServiceNotAvailableOnKeyError."""
         mock_get.return_value = make_response({"Error": 6})
@@ -479,7 +479,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Web service not available on this key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_7_service_not_available_on_plan(self, mock_get):
         """Test error code 7 maps to ServiceNotAvailableOnPlanError."""
         mock_get.return_value = make_response({"Error": 7})
@@ -487,7 +487,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Web service not available on your plan")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_8_key_daily_limit_exceeded(self, mock_get):
         """Test error code 8 maps to KeyDailyLimitExceededError."""
         mock_get.return_value = make_response({"Error": 8})
@@ -495,7 +495,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Key daily limit exceeded")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_9_account_suspended(self, mock_get):
         """Test error code 9 maps to AccountSuspendedError."""
         mock_get.return_value = make_response({"Error": 9})
@@ -503,7 +503,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Your account has been suspended")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_10_surge_protector_triggered(self, mock_get):
         """Test error code 10 maps to SurgeProtectorTriggeredError."""
         mock_get.return_value = make_response({"Error": 10})
@@ -511,7 +511,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Surge protector triggered")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_11_no_valid_license(self, mock_get):
         """Test error code 11 maps to NoValidLicenseError."""
         mock_get.return_value = make_response({"Error": 11})
@@ -519,7 +519,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "No valid license available")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_12_management_key_required(self, mock_get):
         """Test error code 12 maps to ManagementKeyRequiredError."""
         mock_get.return_value = make_response({"Error": 12})
@@ -527,7 +527,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Management key required")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_13_demo_limit_exceeded(self, mock_get):
         """Test error code 13 maps to DemoLimitExceededError."""
         mock_get.return_value = make_response({"Error": 13})
@@ -535,7 +535,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Demo limit exceeded")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_14_free_service_limit_exceeded(self, mock_get):
         """Test error code 14 maps to FreeServiceLimitExceededError."""
         mock_get.return_value = make_response({"Error": 14})
@@ -543,7 +543,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Free service limit exceeded")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_15_wrong_key_type(self, mock_get):
         """Test error code 15 maps to WrongKeyTypeError."""
         mock_get.return_value = make_response({"Error": 15})
@@ -551,7 +551,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Wrong type of key")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_16_key_expired(self, mock_get):
         """Test error code 16 maps to KeyExpiredError."""
         mock_get.return_value = make_response({"Error": 16})
@@ -559,7 +559,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Key expired")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_17_user_lookup_limit_exceeded(self, mock_get):
         """Test error code 17 maps to UserLookupLimitExceededError."""
         mock_get.return_value = make_response({"Error": 17})
@@ -567,7 +567,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Individual User exceeded Lookup Limit")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_18_invalid_parameters(self, mock_get):
         """Test error code 18 maps to InvalidParametersError."""
         mock_get.return_value = make_response({"Error": 18})
@@ -575,7 +575,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Missing or invalid parameters")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_19_invalid_json(self, mock_get):
         """Test error code 19 maps to InvalidJSONError."""
         mock_get.return_value = make_response({"Error": 19})
@@ -583,7 +583,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Invalid JSON object")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_20_endpoint_not_available(self, mock_get):
         """Test error code 20 maps to EndpointNotAvailableError."""
         mock_get.return_value = make_response({"Error": 20})
@@ -591,7 +591,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "Endpoint not available")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_21_sandbox_not_available(self, mock_get):
         """Test error code 21 maps to SandboxNotAvailableError."""
         mock_get.return_value = make_response({"Error": 21})
@@ -602,7 +602,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             "Sandbox Mode is not available on this endpoint"
         )
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_22_https_required(self, mock_get):
         """Test error code 22 maps to HTTPSRequiredError."""
         mock_get.return_value = make_response({"Error": 22})
@@ -610,7 +610,7 @@ class TestGeneralErrorMappingsRetrieve(unittest.TestCase):
             self.client.retrieve("id")
         self.assertEqual(str(context.exception), "HTTPS requests only")
 
-    @patch("AddressComplete.AddressComplete.requests.get")
+    @patch("addresscomplete.AddressComplete.requests.get")
     def test_retrieve_error_23_agreement_not_signed(self, mock_get):
         """Test error code 23 maps to AgreementNotSignedError."""
         mock_get.return_value = make_response({"Error": 23})
@@ -630,7 +630,7 @@ class TestErrorInheritance(unittest.TestCase):
         
     def test_response_error_inheritance(self):
         """Test that ResponseError exceptions inherit from Exception."""
-        from AddressComplete.ErrorHandling import ResponseError
+        from addresscomplete.ErrorHandling import ResponseError
         self.assertTrue(issubclass(ResponseError, Exception))
         
     def test_error_message_content(self):

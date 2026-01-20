@@ -3,7 +3,7 @@ requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
 
 [project]
-name = "AddressComplete"
+name = "addresscomplete"
 version = "1.0.0"
 description = "A Python client for the Canada Post AddressComplete API"
 readme = "README.md"
