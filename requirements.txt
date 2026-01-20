@@ -1,0 +1,2 @@
+requests==2.32.3
+hatchling==1.26.0
