@@ -37,7 +37,7 @@ pip install addresscomplete
 Or install from source:
 
 ```bash
-git clone https://github.com/dellwood546/AddressComplete.git
+git clone https://github.com/darianelwood/AddressComplete.git
 cd AddressComplete
 pip install .
 ```
